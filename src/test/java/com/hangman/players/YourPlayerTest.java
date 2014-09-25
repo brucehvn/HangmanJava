@@ -1,5 +1,6 @@
 package com.hangman.players;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -9,42 +10,64 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class YourPlayerTest {
-//    @Test
-//    public void AlwaysGuessA() {
-//        YourPlayer player = new YourPlayer();
-//
-//        char guess = player.GetGuess(Arrays.asList('a', 'b', 'c'));
-//
-//        assertEquals('a', guess);
-//    }
+    YourPlayer player;
+    ArrayList<Character> theList;
+
+    @Before
+    public void setup() {
+        player = new YourPlayer();
+        theList = new ArrayList<Character>();
+    }
 
     @Test
     public void GetsNewGuessEachTime() throws Exception {
-        YourPlayer player = new YourPlayer();
-        ArrayList<Character> wordSoFar = new ArrayList<Character>();
-
         for (int xctr = 0; xctr < 26; xctr++) {
-            wordSoFar.add(new Character('_'));
+            theList.add(new Character('_'));
         }
 
         char guess = ' ';
 
         for (int xctr = 0; xctr < 26; xctr++) {
-            guess = player.GetGuess(wordSoFar);
+            guess = player.GetGuess(theList);
 
-            for (Character inList : wordSoFar) {
+            for (Character inList : theList) {
 
                 assertTrue(inList.charValue() != guess);
             }
 
             for (int yctr = 0; yctr < 26; yctr++) {
-                Character theChar = wordSoFar.get(yctr);
+                Character theChar = theList.get(yctr);
                 if (theChar.charValue() == '_') {
-                    wordSoFar.set(yctr, guess);
+                    theList.set(yctr, guess);
                     break;
                 }
             }
         }
 
+    }
+
+    @Test
+    public void testFindFirstUnusedLetter() throws Exception {
+        String testStr = "abcdef";
+        for (int xctr = 0; xctr < testStr.length(); xctr++) {
+            theList.add(testStr.charAt(xctr));
+        }
+
+        assertEquals('g', player.findFirstUnusedLetter(theList, "abcdefg"));
+    }
+
+    @Test
+    public void foundCharCountTest() throws Exception {
+        String testStr = "abcdef";
+        for (int xctr = 0; xctr < 20; xctr++) {
+            if (xctr < testStr.length()) {
+                theList.add(testStr.charAt(xctr));
+            }
+            else {
+                theList.add('_');
+            }
+        }
+
+        assertEquals(6, player.foundCharCount(theList));
     }
 }
